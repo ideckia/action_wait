@@ -1,0 +1,8 @@
+[
+	{
+		"name": "wait a half second",
+		"props": {
+			"ms": 500
+		}
+	}
+]
