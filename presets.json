@@ -1,8 +1,14 @@
 [
 	{
-		"name": "wait a half second",
+		"name": "wait 500 milliseconds",
 		"props": {
-			"ms": 500
+			"time": "500ms"
+		}
+	},
+	{
+		"name": "ask how many time",
+		"props": {
+			"ask": true
 		}
 	}
 ]
