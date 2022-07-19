@@ -21,7 +21,7 @@ class Wait extends IdeckiaAction {
 				var timeValue = Std.parseInt(timeEreg.matched(1));
 				var timeUnit:TimeUnit = timeEreg.matched(2);
 				haxe.Timer.delay(() -> resolve(currentState), timeUnit.toMilliseconds(timeValue));
-			}).catchError(msg -> server.dialog.error(msg));
+			}).catchError(msg -> server.dialog.error('Wait error', msg));
 		});
 	}
 
@@ -34,7 +34,7 @@ class Wait extends IdeckiaAction {
 					resolve(timeString);
 			}
 			if (props.ask) {
-				server.dialog.entry('How many time do you want to wait?').then(checkTimeString);
+				server.dialog.entry('Wait time', 'How many time do you want to wait?').then(checkTimeString);
 			} else {
 				checkTimeString(props.time);
 			}
