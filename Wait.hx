@@ -14,13 +14,52 @@ typedef Props = {
 @:description("Waits given time until the next action. The time can be fixed (defined by the [time] property) or can be asked to the user every time the action is fired (if property [ask = true]).")
 class Wait extends IdeckiaAction {
 	var timeEreg = ~/([0-9]+)[\s]*(ms|s|m)?/;
+	var previousState:ItemState;
 
 	public function execute(currentState:ItemState):js.lib.Promise<ItemState> {
 		return new js.lib.Promise((resolve, reject) -> {
 			calculateDelay().then(timeString -> {
 				var timeValue = Std.parseInt(timeEreg.matched(1));
 				var timeUnit:TimeUnit = timeEreg.matched(2);
-				haxe.Timer.delay(() -> resolve(currentState), timeUnit.toMilliseconds(timeValue));
+				var totalMilliseconds = timeUnit.toMilliseconds(timeValue);
+				var timer;
+				if (totalMilliseconds > 1000) {
+					// if it's more than a second, show a countdown
+					previousState = {
+						text: currentState.text,
+						textSize: currentState.textSize,
+						textColor: currentState.textColor,
+						icon: currentState.icon,
+						bgColor: currentState.bgColor
+					}
+					var delay = 100;
+					var totalCalls = totalMilliseconds / delay;
+					var callCounter = 0;
+					var dt = new datetime.DateTime(0).add(Second(Std.int(totalMilliseconds / 1000)));
+					server.updateClientState({
+						text: dt.format('%M:%S')
+					});
+					timer = new haxe.Timer(delay);
+					timer.run = () -> {
+						callCounter++;
+						if (callCounter % 10 == 0) {
+							dt = dt.add(Second(-1));
+							server.updateClientState({
+								text: dt.format('%M:%S')
+							});
+						}
+						if (callCounter >= totalCalls) {
+							resolve(previousState);
+							timer.stop();
+						}
+					};
+				} else {
+					timer = new haxe.Timer(totalMilliseconds);
+					timer.run = () -> {
+						timer.stop();
+						resolve(currentState);
+					};
+				}
 			}).catchError(msg -> server.dialog.error('Wait error', msg));
 		});
 	}
@@ -34,7 +73,7 @@ class Wait extends IdeckiaAction {
 					resolve(timeString);
 			}
 			if (props.ask) {
-				server.dialog.entry('Wait time', 'How many time do you want to wait?').then(checkTimeString);
+				server.dialog.entry('Wait time', 'Time to wait (e.g. 500ms, 3s, 15m)').then(checkTimeString);
 			} else {
 				checkTimeString(props.time);
 			}
