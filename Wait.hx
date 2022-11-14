@@ -73,7 +73,12 @@ class Wait extends IdeckiaAction {
 					resolve(timeString);
 			}
 			if (props.ask) {
-				server.dialog.entry('Wait time', 'Time to wait (e.g. 500ms, 3s, 15m)').then(checkTimeString);
+				server.dialog.entry('Wait time', 'Time to wait (e.g. 500ms, 3s, 15m)').then(response -> {
+					switch response {
+						case Some(time): checkTimeString(time);
+						case None: checkTimeString(null);
+					}
+				});
 			} else {
 				checkTimeString(props.time);
 			}
