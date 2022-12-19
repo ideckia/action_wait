@@ -37,15 +37,16 @@ class Wait extends IdeckiaAction {
 					var callCounter = 0;
 					var dt = new datetime.DateTime(0).add(Second(Std.int(totalMilliseconds / 1000)));
 					server.updateClientState({
-						text: dt.format('%M:%S')
+						text: formatTime(dt)
 					});
 					timer = new haxe.Timer(delay);
 					timer.run = () -> {
 						callCounter++;
 						if (callCounter % 10 == 0) {
 							dt = dt.add(Second(-1));
+
 							server.updateClientState({
-								text: dt.format('%M:%S')
+								text: formatTime(dt)
 							});
 						}
 						if (callCounter >= totalCalls) {
@@ -62,6 +63,10 @@ class Wait extends IdeckiaAction {
 				}
 			}).catchError(msg -> server.dialog.error('Wait error', msg));
 		});
+	}
+
+	inline function formatTime(dt:datetime.DateTime) {
+		return (dt.getHour() > 0) ? dt.format('%H:%M:%S') : dt.format('%M:%S');
 	}
 
 	function calculateDelay():js.lib.Promise<String> {

@@ -1,7 +1,7 @@
 const { IdeckiaAction } = require('.');
 
 // put here the properties you want to test
-const props = { 'time': '2s' };
+const props = { 'time': '61m' };
 
 const server = {
     log: {
@@ -53,7 +53,7 @@ const server = {
             return Promise.resolve(['item0', 'item1']);
         },
     },
-    updateClientState: state => console.log('New state sent to the client: ' + state)
+    updateClientState: state => console.log('New state sent to the client: ' + state.text)
 };
 
 const action = new IdeckiaAction();
