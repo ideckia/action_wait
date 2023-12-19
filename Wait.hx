@@ -16,7 +16,7 @@ class Wait extends IdeckiaAction {
 	var timeEreg = ~/([0-9]+)[\s]*(ms|s|m)?/;
 	var previousState:ItemState;
 
-	public function execute(currentState:ItemState):js.lib.Promise<ItemState> {
+	public function execute(currentState:ItemState):js.lib.Promise<ActionOutcome> {
 		return new js.lib.Promise((resolve, reject) -> {
 			calculateDelay().then(timeString -> {
 				var timeValue = Std.parseInt(timeEreg.matched(1));
@@ -50,7 +50,7 @@ class Wait extends IdeckiaAction {
 							});
 						}
 						if (callCounter >= totalCalls) {
-							resolve(previousState);
+							resolve(new ActionOutcome({state: previousState}));
 							timer.stop();
 						}
 					};
@@ -58,7 +58,7 @@ class Wait extends IdeckiaAction {
 					timer = new haxe.Timer(totalMilliseconds);
 					timer.run = () -> {
 						timer.stop();
-						resolve(currentState);
+						resolve(new ActionOutcome({state: currentState}));
 					};
 				}
 			}).catchError(msg -> server.dialog.error('Wait error', msg));
