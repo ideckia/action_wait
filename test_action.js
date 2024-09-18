@@ -3,7 +3,7 @@ const { IdeckiaAction } = require('.');
 // put here the properties you want to test
 const props = { 'time': '61m' };
 
-const server = {
+const core = {
     log: {
         error: text => console.error(text),
         debug: text => console.debug(text),
@@ -57,7 +57,7 @@ const server = {
 };
 
 const action = new IdeckiaAction();
-action.setup(props, server);
+action.setup(props, core);
 
 const itemState = {
     text: 'State text',

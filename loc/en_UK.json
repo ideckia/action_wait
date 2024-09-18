@@ -1,0 +1,26 @@
+[
+	{
+		"id": "action_description",
+		"text": "Waits given time until the next action. The time can be fixed (defined by the [time] property) or can be asked to the user every time the action is fired (if property [ask = true])."
+	},
+	{
+		"id": "prop_time",
+		"text": "Time to wait until next action. The unit is definde with the value (ms, s or m). If no unit is provided, default is milliseconds. Examples: 500ms, 3s, 15m."
+	},
+	{
+		"id": "prop_ask",
+		"text": "Ask to the user the time to wait every execution. The given time will override any value of 'time' property."
+	},
+	{
+		"id": "not_valid_value",
+		"text": "The given time value is not a valid value."
+	},
+	{
+		"id": "dialog_title",
+		"text": "Wait time"
+	},
+	{
+		"id": "dialog_body",
+		"text": "Time to wait (e.g. 500ms, 3s, 15m)"
+	}
+]

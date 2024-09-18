@@ -1,0 +1,26 @@
+[
+	{
+		"id": "action_description",
+		"text": "Hurrengo ekintza exekutatu aurretik emandako denbora itxarongo du. Denbora finkoa izan daiteke ('time' propietatean definituta) edo aldi oro erabiltzaileari galde diezaioke ('ask' propietatea markatuta badago)."
+	},
+	{
+		"id": "prop_time",
+		"text": "Hurrengo ekintzara arte itxaron beharreko denbora. Unitatea balioan bertan definitzen da (ms, s edo m). Ez badago unitaterik, milisegundutzat hartuko dira. Adibideak: 500ms, 3s, 15m."
+	},
+	{
+		"id": "prop_ask",
+		"text": "Erabiltzaileari galdetu aldi oro zenbat denboraz itxaron behar den. Emandako balioak 'time' propietatea gainidatziko du."
+	},
+	{
+		"id": "not_valid_value",
+		"text": "Emandako balioa ez da zuzena."
+	},
+	{
+		"id": "dialog_title",
+		"text": "Itxaron denbora"
+	},
+	{
+		"id": "dialog_body",
+		"text": "Itxaron beharreko denbora (adib.: 500ms, 3s, 15m)"
+	}
+]

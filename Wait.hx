@@ -3,15 +3,15 @@ package;
 using api.IdeckiaApi;
 
 typedef Props = {
-	@:editable("Time to wait until next action. The unit is definde with the value (ms, s or m). If no unit is provided, default is milliseconds. Examples: 500ms, 3s, 15m.",
-		'1m')
+	@:editable("prop_time", '1m')
 	var time:String;
-	@:editable("Ask to the user the time to wait every execution. The given time will override any value of [time] property.", false)
+	@:editable("prop_ask", false)
 	var ask:Bool;
 }
 
 @:name("wait")
-@:description("Waits given time until the next action. The time can be fixed (defined by the [time] property) or can be asked to the user every time the action is fired (if property [ask = true]).")
+@:description("action_description")
+@:localize
 class Wait extends IdeckiaAction {
 	var timeEreg = ~/([0-9]+)[\s]*(ms|s|m)?/;
 	var previousState:ItemState;
@@ -36,7 +36,7 @@ class Wait extends IdeckiaAction {
 					var totalCalls = totalMilliseconds / delay;
 					var callCounter = 0;
 					var dt = new datetime.DateTime(0).add(Second(Std.int(totalMilliseconds / 1000)));
-					server.updateClientState({
+					core.updateClientState({
 						text: formatTime(dt)
 					});
 					timer = new haxe.Timer(delay);
@@ -45,7 +45,7 @@ class Wait extends IdeckiaAction {
 						if (callCounter % 10 == 0) {
 							dt = dt.add(Second(-1));
 
-							server.updateClientState({
+							core.updateClientState({
 								text: formatTime(dt)
 							});
 						}
@@ -61,7 +61,7 @@ class Wait extends IdeckiaAction {
 						resolve(new ActionOutcome({state: currentState}));
 					};
 				}
-			}).catchError(msg -> server.dialog.error('Wait error', msg));
+			}).catchError(msg -> core.dialog.error('Wait error', msg));
 		});
 	}
 
@@ -73,12 +73,12 @@ class Wait extends IdeckiaAction {
 		return new js.lib.Promise((resolve, reject) -> {
 			function checkTimeString(timeString) {
 				if (timeString == null || Std.parseInt(timeString) == null || !timeEreg.match(timeString))
-					reject('The given time value is not a valid value.');
+					reject(Loc.not_valid_value.tr());
 				else
 					resolve(timeString);
 			}
 			if (props.ask) {
-				server.dialog.entry('Wait time', 'Time to wait (e.g. 500ms, 3s, 15m)').then(response -> {
+				core.dialog.entry(Loc.dialog_title.tr(), Loc.dialog_body.tr()).then(response -> {
 					switch response {
 						case Some(time): checkTimeString(time);
 						case None: checkTimeString(null);
