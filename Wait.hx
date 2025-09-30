@@ -14,7 +14,14 @@ typedef Props = {
 @:localize
 class Wait extends IdeckiaAction {
 	var timeEreg = ~/([0-9]+)[\s]*(ms|s|m)?/;
+	var timer:haxe.Timer;
 	var previousState:ItemState;
+
+	override function deinit() {
+		if (timer != null)
+			timer.stop();
+		timer = null;
+	}
 
 	public function execute(currentState:ItemState):js.lib.Promise<ActionOutcome> {
 		return new js.lib.Promise((resolve, reject) -> {
@@ -22,7 +29,6 @@ class Wait extends IdeckiaAction {
 				var timeValue = Std.parseInt(timeEreg.matched(1));
 				var timeUnit:TimeUnit = timeEreg.matched(2);
 				var totalMilliseconds = timeUnit.toMilliseconds(timeValue);
-				var timer;
 				if (totalMilliseconds > 1000) {
 					// if it's more than a second, show a countdown
 					previousState = {
